@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>10 Level Puzzle Game</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#111;
+color:white;
+text-align:center;
+}
+
+#board{
+margin:20px auto;
+display:grid;
+gap:5px;
+}
+
+.tile{
+width:70px;
+height:70px;
+background:#00bfff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+cursor:pointer;
+}
+
+.empty{
+background:black;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🧩 Puzzle Game</h1>
+<h2 id="level">Level 1</h2>
+
+<div id="board"></div>
+
+<button onclick="shuffle()">Shuffle</button>
+
+<script>
+
+let level=1
+let size=3
+let tiles=[]
+let board=document.getElementById("board")
+let levelText=document.getElementById("level")
+
+function startLevel(){
+
+size = 2 + level
+
+tiles=[]
+
+for(let i=1;i<size*size;i++){
+tiles.push(i)
+}
+
+tiles.push(0)
+
+board.style.gridTemplateColumns="repeat("+size+",70px)"
+
+shuffle()
+
+}
+
+function createBoard(){
+
+board.innerHTML=""
+
+tiles.forEach((num,i)=>{
+
+let tile=document.createElement("div")
+
+tile.classList.add("tile")
+
+if(num===0){
+tile.classList.add("empty")
+}else{
+tile.innerText=num
+}
+
+tile.onclick=()=>move(i)
+
+board.appendChild(tile)
+
+})
+
+}
+
+function move(index){
+
+let emptyIndex=tiles.indexOf(0)
+
+let row=Math.floor(index/size)
+let col=index%size
+
+let erow=Math.floor(emptyIndex/size)
+let ecol=emptyIndex%size
+
+if(
+(Math.abs(row-erow)==1 && col==ecol) ||
+(Math.abs(col-ecol)==1 && row==erow)
+){
+
+[tiles[index],tiles[emptyIndex]]=[tiles[emptyIndex],tiles[index]]
+
+createBoard()
+
+checkWin()
+
+}
+
+}
+
+function shuffle(){
+
+for(let i=tiles.length-1;i>0;i--){
+
+let j=Math.floor(Math.random()*i)
+
+;[tiles[i],tiles[j]]=[tiles[j],tiles[i]]
+
+}
+
+createBoard()
+
+}
+
+function checkWin(){
+
+for(let i=0;i<tiles.length-1;i++){
+
+if(tiles[i]!==i+1)return
+
+}
+
+alert("Level "+level+" Complete!")
+
+level++
+
+if(level>10){
+
+alert("🎉 You finished all 10 levels!")
+
+level=1
+
+}
+
+levelText.innerText="Level "+level
+
+startLevel()
+
+}
+
+startLevel()
+
+</script>
+
+</body>
+</html>
